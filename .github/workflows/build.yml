@@ -49,6 +49,7 @@ jobs:
           npm install -g @semantic-release/git @semantic-release/github \
               @semantic-release/exec @semantic-release/commit-analyzer \
               @semantic-release/release-notes-generator 
+      
       - name: rexecute semantic-release
         run: |
           semantic-release --no-ci --dry-run
