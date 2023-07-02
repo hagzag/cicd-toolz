@@ -56,6 +56,12 @@ jobs:
             - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
           EOF
 
+      - name: yq - portable yaml processor
+        uses: mikefarah/yq@v4.34.1
+ 
+      - name: run yq 
+        run: yq --help
+
       - name: show .releaserc.yml
         run: cat .releaserc.yml && git status
           
