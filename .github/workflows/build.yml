@@ -41,17 +41,20 @@ jobs:
           - - "@semantic-release/exec"
             - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
           EOF
+
       - name: show .releaserc.yml
         run: cat .releaserc.yml && git status
           
       - name: install semantic-release
         run: |
           npm install -g semantic-release
-          npm install -g @semantic-release/git @semantic-release/github \
-              @semantic-release/exec @semantic-release/commit-analyzer \
-              @semantic-release/release-notes-generator 
+          npm install -g  @semantic-release/github \
+                          @semantic-release/exec \
+                          @semantic-release/commit-analyzer \
+                          @semantic-release/release-notes-generator \
+                          @semantic-release/git
       
-      - name: rexecute semantic-release
+      - name: execute semantic-release
         run: |
-          semantic-release --no-ci --dry-run
+          semantic-release
           
