@@ -43,11 +43,13 @@ jobs:
       - name: show .releaserc.yml
         run: cat .releaserc.yml && git status
           
-      - name: install semantic-releaes
+      - name: install semantic-release
         run: |
           npm install -g semantic-release
           npm install -g @semantic-release/git @semantic-release/github \
               @semantic-release/exec @semantic-release/commit-analyzer \
               @semantic-release/release-notes-generator 
-          
+      - name: rexecute semantic-release
+        run: |
+          semantic-release --no-ci --dry-run
           
