@@ -38,7 +38,7 @@ jobs:
           - "@semantic-release/commit-analyzer"
           - "@semantic-release/github"
           - - "@semantic-release/exec"
-            - verifyReleaseCmd: echo ${nextRelease.version} > nextVersion
+            - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
           EOF
       - name: show .releaserc.yml
         run: cat .releaserc.yml && git status
