@@ -1,12 +1,12 @@
 branches:
-- "main"
-- "master"
-- "dev"
+- main
+- master
+- name: dev
   prerelease: true
 plugins:
 - "@semantic-release/commit-analyzer"
 - "@semantic-release/release-notes-generator"
-- "@semantic-release/gitlab"
+- "@semantic-release/github"
 - - "@semantic-release/changelog"
   - changelogFile: CHANGELOG.md
 - - "@semantic-release/git"
@@ -16,4 +16,5 @@ plugins:
       chore(release): ${nextRelease.version} [skip ci]
       ${nextRelease.notes}
 - - "@semantic-release/exec"
-  - verifyReleaseCmd: "echo ${nextVersion.version} \n"
+  # - verifyReleaseCmd: "echo ${nextRelease.version} > VERSION.txt"
+  - verifyReleaseCmd: "echo ${nextMajor.version} > VERSIONM.txt"
