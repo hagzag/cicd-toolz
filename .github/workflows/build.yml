@@ -52,12 +52,18 @@ jobs:
           - - "@semantic-release/exec"
             - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
           EOF
-          semantic-release --dry-run -r ${{ github.server_url }}/${{ github.repository }}.git
+          semantic-release -r ${{ github.server_url }}/${{ github.repository }}.git
+          test -f nextVersion && echo "SRTAG=v$(cat nextVersion)" >> ${GITHUB_OUTPUT}
           cat nextVersion
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-
+      - name: just echo nectVerson
+        run: echo $SRTAG
+        env:
+          SRTAG: ${{ steps.nextrealease.outputs.SRTAG }}
+          
+          
 #       - uses: actions/cache@v3
 #         id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
 #         with:
