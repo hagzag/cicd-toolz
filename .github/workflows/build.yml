@@ -34,7 +34,7 @@ jobs:
           npm install -g semantic-release
           npm install -g @semantic-release/git @semantic-release/github @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/exec
       
-      - name: generate .releaserc.yml
+      - name: setup and execute semantic-release
         id: nextrealease
         run: |
           cat <<EOF>> .releaserc.yml
