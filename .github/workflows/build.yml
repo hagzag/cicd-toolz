@@ -18,32 +18,24 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-   # runs-on: [self-hosted] 
+#     runs-on: ubuntu-latest
+    runs-on: [self-hosted] 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: Use Node v12
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: "lts/*"
+          node-version: 18
 
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
-
-      - uses: actions/cache@v3
-        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
+      - name: Install semantic releae dependencies
+        run: |
+          npm install -g semantic-release
+          npm install -g @semantic-release/git @semantic-release/github @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/exec
+      
       - name: generate .releaserc.yml
+        id: nextrealease
         run: |
           cat <<EOF>> .releaserc.yml
           branches:
@@ -55,18 +47,26 @@ jobs:
           - - "@semantic-release/exec"
             - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
           EOF
+          semantic-release
+          cat nextVersion
+      # Runs a set of commands using the runners shell
+#       - name: run semantic-release
+#         run: |
+#           semantic-release -r ${{ github.server_url }}/${{ github.repository }}.git
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  - name: Semantic Release
-    uses: cycjimmy/semantic-release-action@v3
-    id: semantic   # Need an `id` for output variables
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#       - name: Get npm cache directory
+#         id: npm-cache-dir
+#         shell: bash
+#         run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
 
-  - name: Do something when a new release published
-    if: steps.semantic.outputs.new_release_published == 'true'
-    run: |
-      echo ${{ steps.semantic.outputs.new_release_version }}
-      echo ${{ steps.semantic.outputs.new_release_major_version }}
-      echo ${{ steps.semantic.outputs.new_release_minor_version }}
-      echo ${{ steps.semantic.outputs.new_release_patch_version }}
+#       - uses: actions/cache@v3
+#         id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+#         with:
+#           path: ${{ steps.npm-cache-dir.outputs.dir }}
+#           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+#           restore-keys: |
+#             ${{ runner.os }}-node-
+
+
