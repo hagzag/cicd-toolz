@@ -6,9 +6,9 @@ name: release-flow
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "*" ]
+    branches: ["*"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -17,49 +17,51 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
+    #     runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     # The type of runner that the job will run on
-#     runs-on: ubuntu-latest
-    runs-on: [self-hosted] 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
 
-      - name: Install semantic releae dependencies
-        run: |
-          npm install -g semantic-release
-          npm install -g @semantic-release/git @semantic-release/github @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/exec
+    - name: Install semantic releae dependencies
+      run: |
+        npm install -g semantic-release
+        npm install -g @semantic-release/git @semantic-release/github @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/exec
 
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        shell: bash
-        run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+    - name: Get npm cache directory
+      id: npm-cache-dir
+      shell: bash
+      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
 
-      - name: setup and execute semantic-release
-        id: nextrealease
-        run: |
-          cat <<EOF>> .releaserc.yml
-          branches:
-          - main
-          plugins:
-          - "@semantic-release/commit-analyzer"
-          - "@semantic-release/release-notes-generator"
-          - "@semantic-release/github"
-          - - "@semantic-release/exec"
-            - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
-          EOF
-          semantic-release -r ${{ github.server_url }}/${{ github.repository }}.git
-          test -f nextVersion && echo "SRTAG=v$(cat nextVersion)" >> ${GITHUB_OUTPUT}
-          cat nextVersion
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: just echo nectVerson
-        run: echo $SRTAG
-        env:
-          SRTAG: ${{ steps.nextrealease.outputs.SRTAG }}
-      
+    - name: setup and execute semantic-release
+      id: nextrealease
+      run: |
+        cat <<EOF>> .releaserc.yml
+        branches:
+        - main
+        - name: dev
+          prerelease: true
+        plugins:
+        - "@semantic-release/commit-analyzer"
+        - "@semantic-release/release-notes-generator"
+        - "@semantic-release/github"
+        - - "@semantic-release/exec"
+          - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
+        EOF
+        semantic-release -r ${{ github.server_url }}/${{ github.repository }}.git
+        test -f nextVersion && echo "SRTAG=v$(cat nextVersion)" >> ${GITHUB_OUTPUT}
+        cat nextVersion
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: just echo nectVerson
+      run: echo $SRTAG
+      env:
+        SRTAG: ${{ steps.nextrealease.outputs.SRTAG }}
+
