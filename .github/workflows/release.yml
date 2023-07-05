@@ -60,7 +60,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: just echo nectVerson
+    - name: just echo nextVerson
       run: echo $SRTAG
       env:
         SRTAG: ${{ steps.nextrealease.outputs.SRTAG }}
