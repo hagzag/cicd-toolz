@@ -57,7 +57,7 @@ jobs:
           - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
         EOF
         semantic-release -r ${{ github.server_url }}/${{ github.repository }}.git
-        test -f nextVersion && echo "SRTAG=v$(cat nextVersion)" >> ${GITHUB_OUTPUT} || "SRTAG=${{ steps.vars.outputs.short_sha }}" >> ${GITHUB_OUTPUT}
+        test -f nextVersion && echo "SRTAG=v$(cat nextVersion)" >> ${GITHUB_OUTPUT} || echo "SRTAG=${{ steps.vars.outputs.short_sha }}" >> ${GITHUB_OUTPUT}
         echo $SRTAG
         # cat nextVersion
       env:
