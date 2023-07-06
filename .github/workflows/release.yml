@@ -30,94 +30,90 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v3
-
-    ## semantic-release
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18
-
-    - name: Install semantic releae dependencies
-      run: |
-        npm install -g semantic-release
-        npm install -g @semantic-release/git @semantic-release/github @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/exec
-
-    - name: Set short git commit SHA
-      id: vars
-      run: |
-        calculatedSha=$(git rev-parse --short ${{ github.sha }})
-          echo "::set-output name=short_sha::$calculatedSha"
-
-    - name: setup and execute semantic-release
-      id: semantic_release
-      run: |
-        cat <<EOF>> .releaserc.yml
-        branches:
-        - main
-        - name: dev
-          prerelease: true
-        plugins:
-        - "@semantic-release/commit-analyzer"
-        - "@semantic-release/release-notes-generator"
-        - "@semantic-release/github"
-        - - "@semantic-release/exec"
-          - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
-        EOF
-        semantic-release -r ${{ github.server_url }}/${{ github.repository }}.git
-        test -f nextVersion && echo "SRTAG=v$(cat nextVersion)" >> ${GITHUB_OUTPUT} || echo "SRTAG=${{ steps.vars.outputs.short_sha }}" >> ${GITHUB_OUTPUT}
-        echo $SRTAG
-        # cat nextVersion
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-#     - name: just echo nextVerson
-#       run: echo $SRTAG
-#       env:
-#         SRTAG: ${{ steps.semantic_release.outputs.SRTAG }}
-    # docker build
-    # build
-    - name: Setup Docker buildx
-      uses: docker/setup-buildx-action@v2
-
-    # Login against a Docker registry except on PR
-    # https://github.com/docker/login-action
-    - name: Log into registry ${{ env.REGISTRY }}
-      if: github.event_name != 'pull_request'
-      uses: docker/login-action@v2
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    # Extract metadata (tags, labels) for Docker
-    # https://github.com/docker/metadata-action
-    - name: Extract Docker metadata
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-        tags: |
-          # set latest tag for master branch
-          type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-          type=raw,value=latest-dev,enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}
-          type=raw,value=${{ steps.semantic_release.outputs.SRTAG }}
-          
-    # For meta verification
-    - name: List Docker tag
-      run: echo "${{ steps.meta.outputs.tags }}"
-
-#     # add image caching 
-#     - uses: satackey/action-docker-layer-caching@v0.0.11
-#       # Ignore the failure of a step and avoid terminating the job.
-#       continue-on-error: true
-
-#     # Build and push Docker image with Buildx (don't push on PR's)
-#     # https://github.com/docker/build-push-action
-#     - name: Build and push Docker image
-#       id: build-and-push
-#       uses: docker/build-push-action@v4
+    - name: getenv
+      run: env
+#     ## semantic-release
+#     - uses: actions/setup-node@v3
 #       with:
-#         context: ./
-#         push: ${{ github.event_name != 'pull_request' }}
-#         tags: ${{ steps.meta.outputs.tags }}
-#         labels: ${{ steps.meta.outputs.labels }}
+#         node-version: 18
+
+#     - name: Install semantic releae dependencies
+#       run: |
+#         npm install -g semantic-release
+#         npm install -g @semantic-release/git @semantic-release/github @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/exec
+
+#     - name: Set short git commit SHA
+#       id: vars
+#       run: |
+#         calculatedSha=$(git rev-parse --short ${{ github.sha }})
+#           echo "::set-output name=short_sha::$calculatedSha"
+
+#     - name: setup and execute semantic-release
+#       id: semantic_release
+#       run: |
+#         cat <<EOF>> .releaserc.yml
+#         branches:
+#         - main
+#         - name: dev
+#           prerelease: true
+#         plugins:
+#         - "@semantic-release/commit-analyzer"
+#         - "@semantic-release/release-notes-generator"
+#         - "@semantic-release/github"
+#         - - "@semantic-release/exec"
+#           - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
+#         EOF
+#         semantic-release -r ${{ github.server_url }}/${{ github.repository }}.git
+#         test -f nextVersion && echo "SRTAG=v$(cat nextVersion)" >> ${GITHUB_OUTPUT} || echo "SRTAG=${{ steps.vars.outputs.short_sha }}" >> ${GITHUB_OUTPUT}
+#         echo $SRTAG
+#         # cat nextVersion
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#     # build
+#     - name: Setup Docker buildx
+#       uses: docker/setup-buildx-action@v2
+
+#     # Login against a Docker registry except on PR
+#     # https://github.com/docker/login-action
+#     - name: Log into registry ${{ env.REGISTRY }}
+#       if: github.event_name != 'pull_request'
+#       uses: docker/login-action@v2
+#       with:
+#         registry: ${{ env.REGISTRY }}
+#         username: ${{ github.actor }}
+#         password: ${{ secrets.GITHUB_TOKEN }}
+
+#     # Extract metadata (tags, labels) for Docker
+#     # https://github.com/docker/metadata-action
+#     - name: Extract Docker metadata
+#       id: meta
+#       uses: docker/metadata-action@v4
+#       with:
+#         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+#         tags: |
+#           # set latest tag for master branch
+#           type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+#           type=raw,value=latest-dev,enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}
+#           type=raw,value=${{ steps.semantic_release.outputs.SRTAG }}
+          
+#     # For meta verification
+#     - name: List Docker tag
+#       run: echo "${{ steps.meta.outputs.tags }}"
+
+# #     # add image caching 
+# #     - uses: satackey/action-docker-layer-caching@v0.0.11
+# #       # Ignore the failure of a step and avoid terminating the job.
+# #       continue-on-error: true
+
+# #     # Build and push Docker image with Buildx (don't push on PR's)
+# #     # https://github.com/docker/build-push-action
+# #     - name: Build and push Docker image
+# #       id: build-and-push
+# #       uses: docker/build-push-action@v4
+# #       with:
+# #         context: ./
+# #         push: ${{ github.event_name != 'pull_request' }}
+# #         tags: ${{ steps.meta.outputs.tags }}
+# #         labels: ${{ steps.meta.outputs.labels }}
 
