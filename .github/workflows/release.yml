@@ -94,7 +94,7 @@ jobs:
         tags: |
           # set latest tag for master branch
           type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
-          type=raw,value=latest-${{ env.GITHUB_REF_NAME }}
+          type=raw,value=latest-${{ github.ref_name }}
           type=raw,value=${{ steps.semantic_release.outputs.SRTAG }}
           
     # For meta verification
