@@ -25,6 +25,7 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v3
 
+    ## semantic-release
     - uses: actions/setup-node@v3
       with:
         node-version: 18
@@ -34,13 +35,14 @@ jobs:
         npm install -g semantic-release
         npm install -g @semantic-release/git @semantic-release/github @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator @semantic-release/exec
 
-    - name: Get npm cache directory
-      id: npm-cache-dir
-      shell: bash
-      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+    - name: Set short git commit SHA
+      id: vars
+      run: |
+        calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "::set-output name=short_sha::$calculatedSha"
 
     - name: setup and execute semantic-release
-      id: nextrealease
+      id: semantic_release
       run: |
         cat <<EOF>> .releaserc.yml
         branches:
@@ -55,13 +57,14 @@ jobs:
           - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
         EOF
         semantic-release -r ${{ github.server_url }}/${{ github.repository }}.git
-        test -f nextVersion && echo "SRTAG=v$(cat nextVersion)" >> ${GITHUB_OUTPUT}
-        cat nextVersion
+        test -f nextVersion && echo "SRTAG=v$(cat nextVersion)" >> ${GITHUB_OUTPUT} || "SRTAG=${{ steps.vars.outputs.short_sha }}" >> ${GITHUB_OUTPUT}
+        echo $SRTAG
+        # cat nextVersion
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: just echo nextVerson
       run: echo $SRTAG
       env:
-        SRTAG: ${{ steps.nextrealease.outputs.SRTAG }}
+        SRTAG: ${{ steps.semantic_release.outputs.SRTAG }}
 
