@@ -97,7 +97,8 @@ jobs:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
           # set latest tag for master branch
-          type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+          type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+          type=raw,value=latest-dev,enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}
           type=raw,value=${{ steps.nextrealease.outputs.SRTAG }}
           
     # For meta verification
