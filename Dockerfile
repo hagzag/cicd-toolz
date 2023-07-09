@@ -1,4 +1,4 @@
-FROM docker.io/argoproj/argocd:${ARGOCD_VERSION:-latest} AS argocd
+FROM quay.io/argoproj/argocd:${ARGOCD_VERSION:-latest} AS argocd
 FROM docker.io/dtzar/helm-kubectl:${KUBECTL_VERSION:-latest} AS kubectl
 FROM docker.io/alpine/terragrunt:${TERRAGRUNT_VERSION:-1.4.5-eks} AS terragrunt
 FROM docker.io/alpine:3.18.2
