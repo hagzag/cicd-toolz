@@ -1,5 +1,11 @@
 # CI🌩️CD-Toolz - Docker Image
 
+| Release branch  |  Development branch (next) |
+|---|---|
+| [![release-flow](https://github.com/hagzag/cicd-toolz/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/hagzag/cicd-toolz/actions/workflows/release.yml) | [![release-flow](https://github.com/hagzag/cicd-toolz/actions/workflows/release.yml/badge.svg?branch=dev)](https://github.com/hagzag/cicd-toolz/actions/workflows/release.yml)  |
+
+
+
 <!-- vscode-markdown-toc -->
 * 1. [Introduction](#Introduction)
 * 2. [ Tools included](#Toolsincluded)
