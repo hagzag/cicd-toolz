@@ -74,8 +74,6 @@ jobs:
     # build
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
-      with:
-        platforms: 'arm64,arm,amd64,amd'
 
     - name: Setup Docker buildx
       uses: docker/setup-buildx-action@v2
@@ -122,4 +120,4 @@ jobs:
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        platforms: linux/arm64,linux/arm/v7,linux/amd64
+        platforms: linux/amd64,linux/arm64
