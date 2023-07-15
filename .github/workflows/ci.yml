@@ -88,6 +88,16 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    # add image caching 
+    - uses: satackey/action-docker-layer-caching@v0.0.11
+      # Ignore the failure of a step and avoid terminating the job.
+      continue-on-error: true
+      with:
+        key: foo-docker-cache-{hash}
+        restore-keys: |
+          foo-docker-cache-
+
+
     # Extract metadata (tags, labels) for Docker
     # https://github.com/docker/metadata-action
     - name: Extract Docker metadata
@@ -105,10 +115,7 @@ jobs:
     - name: List Docker tag
       run: echo "${{ steps.meta.outputs.tags }}"
 
-    # add image caching 
-    - uses: satackey/action-docker-layer-caching@v0.0.11
-      # Ignore the failure of a step and avoid terminating the job.
-      continue-on-error: true
+
 
     # Build and push Docker image with Buildx (don't push on PR's)
     # https://github.com/docker/build-push-action
