@@ -125,18 +125,6 @@ jobs:
     - name: setup and execute semantic-release
       id: semantic_release
       run: |
-        cat <<EOF>> .releaserc.yml
-        branches:
-        - main
-        - name: dev
-          prerelease: true
-        plugins:
-        - "@semantic-release/commit-analyzer"
-        - "@semantic-release/release-notes-generator"
-        - "@semantic-release/github"
-        - - "@semantic-release/exec"
-          - verifyReleaseCmd: echo \${nextRelease.version} > nextVersion
-        EOF
         semantic-release -r ${{ github.server_url }}/${{ github.repository }}.git
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
