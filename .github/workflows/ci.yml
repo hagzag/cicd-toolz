@@ -47,7 +47,7 @@ jobs:
       id: vars
       run: |
         calculatedSha=$(git rev-parse --short ${{ github.sha }})
-        echo "::set-output name=short_sha::$calculatedSha"
+        echo "short_sha=$calculatedSha" >> $GITHUB_OUTPUT
 
     - name: setup and execute semantic-release
       id: semantic_release_prep
@@ -99,7 +99,7 @@ jobs:
           # set latest tag for master branch
           type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
           type=raw,value=latest-${{ github.ref_name }}
-          type=raw,value=${{ steps.semantic_release.outputs.SRTAG }}
+          type=raw,value=${{ steps.semantic_release_prep.outputs.SRTAG }}
           
     # For meta verification
     - name: List Docker tag
