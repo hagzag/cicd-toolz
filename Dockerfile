@@ -11,7 +11,7 @@ COPY --from=terragrunt /bin/terraform            /usr/local/bin/
 COPY --from=terragrunt /usr/local/bin/terragrunt /usr/local/bin/
 
 RUN apk update \
-    && apk add --no-cache curl jq yq bash git openssh glab github-cli jsonnet \
+    && apk add --no-cache curl jq yq bash git openssh glab github-cli jsonnet go-task \
     && apk add --update nodejs  npm \
     && rm -rf /var/cache/apk/*
 
@@ -27,6 +27,8 @@ RUN npm install -g  yarn\
                     @semantic-release/commit-analyzer \
                     @semantic-release/changelog \
                     @semantic-release/exec
+
+RUN ln -s /usr/bin/go-task /usr/bin/task
 
 RUN /bin/sh -c curl -sL https://taskfile.dev/install.sh | sh
 
