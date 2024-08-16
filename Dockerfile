@@ -1,7 +1,7 @@
 FROM quay.io/argoproj/argocd:${ARGOCD_VERSION:-latest} AS argocd
 FROM docker.io/dtzar/helm-kubectl:${KUBECTL_VERSION:-latest} AS kubectl
 FROM docker.io/alpine/terragrunt:${TERRAGRUNT_VERSION:-1.4.5-eks} AS terragrunt
-FROM docker.io/alpine:3.19.1
+FROM docker.io/alpine:latest
 
 COPY --from=argocd /usr/local/bin/argocd         /usr/local/bin/
 COPY --from=argocd /usr/local/bin/helm           /usr/local/bin/
