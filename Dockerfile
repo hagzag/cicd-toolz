@@ -31,6 +31,11 @@ RUN npm install -g  yarn\
 
 RUN ln -s /usr/bin/go-task /usr/bin/task
 
+# gcloud cli
+RUN curl -sSL https://sdk.cloud.google.com | bash \
+    && mv /root/google-cloud-sdk /usr/local/ \
+    && ln -s /usr/local/google-cloud-sdk/bin/gcloud /usr/local/bin/gcloud
+
 ENV HELM_EXPERIMENTAL_OCI=1
 
 ENTRYPOINT ["/bin/bash", "-l", "-c"]
